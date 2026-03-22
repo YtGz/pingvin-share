@@ -63,7 +63,7 @@ export const configVariables = {
     },
     zipCompressionLevel: {
       type: "number",
-      defaultValue: "9",
+      defaultValue: "0",
     },
     chunkSize: {
       type: "filesize",

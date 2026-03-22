@@ -117,9 +117,12 @@ export class ShareService {
     const writeStream = fs.createWriteStream(`${path}/archive.zip`);
 
     for (const file of files) {
-      archive.append(fs.createReadStream(`${path}/${file.id}`), {
-        name: file.name,
-      });
+      archive.append(
+        fs.createReadStream(`${path}/${file.id}`, {
+          highWaterMark: 2 * 1024 * 1024,
+        }),
+        { name: file.name },
+      );
     }
 
     archive.pipe(writeStream);

@@ -16,6 +16,8 @@ import { validate as isValidUUID } from "uuid";
 import { SHARE_DIRECTORY } from "../constants";
 import { Readable } from "stream";
 
+const STREAM_HIGH_WATER_MARK = 2 * 1024 * 1024;
+
 @Injectable()
 export class LocalFileService {
   constructor(
@@ -125,7 +127,9 @@ export class LocalFileService {
 
     if (!fileMetaData) throw new NotFoundException("File not found");
 
-    const file = createReadStream(`${SHARE_DIRECTORY}/${shareId}/${fileId}`);
+    const file = createReadStream(`${SHARE_DIRECTORY}/${shareId}/${fileId}`, {
+      highWaterMark: STREAM_HIGH_WATER_MARK,
+    });
 
     return {
       metaData: {
@@ -160,6 +164,7 @@ export class LocalFileService {
     return new Promise((resolve, reject) => {
       const zipStream = createReadStream(
         `${SHARE_DIRECTORY}/${shareId}/archive.zip`,
+        { highWaterMark: STREAM_HIGH_WATER_MARK },
       );
 
       zipStream.on("error", (err) => {
